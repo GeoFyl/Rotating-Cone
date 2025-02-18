@@ -1,10 +1,8 @@
-# Currently according to lecture notes, so for ellipsoidal object
 
-# Calculate moments of inertia from semi-axis 
-def GetMomentsOfInertia(M, a, b, c):
-    I1 = M * (b*b + c*c)/5
-    I2 = M * (a*a + c*c)/5
-    I3 = M * (a*a + b*b)/5
+# Calculate moments of inertia for cone from mass, height and base radius 
+def GetMomentsOfInertia(M, h, r):
+    I1 = I2 = 3 * M * (r*r + (h*h)/4) / 20
+    I3 = 6 * M * r*r / 20
     
     return I1, I2, I3
 
@@ -47,24 +45,20 @@ def RungeKutta(Wx0, Wy0, Wz0, I1, I2, I3, stepSize, steps):
         
         print("Step %s: %s, %s, %s" % (n, Wxn, Wyn, Wzn))
 
-    return Wxn, Wyn, Wzn
+    #return Wxn, Wyn, Wzn
 
 
 # Define initial conditions, step size and number of steps
-Wx0 = 1
-Wy0 = 1
-Wz0 = 1
+Wx0, Wy0, Wz0 = 1, 2, 3
+mass = 5
+radius = 2
+height = 4
 
-Mass = 3.14
-a = 3
-b = 2
-c = 1
-
-stepSize = 0.08
-steps = 10
+stepSize = 0.1
+steps = 200
 
 # Calculate moments of inertia
-I1, I2, I3 = GetMomentsOfInertia(Mass, a, b, c)
+I1, I2, I3 = GetMomentsOfInertia(mass, height, radius)
 
 # Do the computation
 RungeKutta(Wx0, Wy0, Wz0, I1, I2, I3, stepSize, steps)
