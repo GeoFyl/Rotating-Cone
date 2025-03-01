@@ -1,5 +1,6 @@
 ﻿import math
 import matplotlib.pyplot as plt
+import numpy as np
 
 # -----========== Task 1 and 2  ==========-----
 
@@ -55,17 +56,11 @@ def RungeKutta():
     return Wx, Wy, Wz, Wmagnitude
 
 def PlotTask1():
-    # Populate array with values for plot's x-axis (time)
-    timeArray = []
-    for i in range(0, steps + 1):
-        timeArray.append(i * stepSize)
-
     # Plot graph
     plt.plot(timeArray, WxArray, label="ωx")
     plt.plot(timeArray, WyArray, label="ωy")
     plt.plot(timeArray, WzArray, label="ωz")
     plt.plot(timeArray, WmagArray, label="|ω|")
-    #plt.legend(loc="lower left", bbox_to_anchor=(1, 0))
     plt.legend(loc="lower right")
     plt.title("Task 1 Angular Velocity")
     plt.xlabel("time (s)")
@@ -91,12 +86,7 @@ def SemiImplicitEuler():
     return x, v
    
 def PlotTask3():
-    # Populate array with values for plot's x-axis (time)
-    timeArray = []
-    for i in range(0, steps + 1):
-        timeArray.append(i * stepSize)
-
-    # Plot graph
+    # Plot graphs
     plt.figure()
     plt.plot(timeArray, v)
     plt.title("Task 3 Vertical Velocity")
@@ -112,6 +102,66 @@ def PlotTask3():
 
 # -----========== Task 5  ==========-----
 
+def BuildRotationMatrix(a, B, Y, theta):
+    cosTheta = math.cos(theta)
+    sinTheta = math.sin(theta)
+    
+    rotationMatrix = [[a * a * (1 - cosTheta) + cosTheta, a * B * (1 - cosTheta) - Y * sinTheta, a * Y * (1 - cosTheta) + B * sinTheta],
+                      [B * a * (1 - cosTheta) + Y * sinTheta, B * B * (1 - cosTheta) + cosTheta, B * Y * (1 - cosTheta) - a * sinTheta],
+                      [Y * a * (1 - cosTheta) - B * sinTheta, Y * B * (1 - cosTheta) + a * sinTheta, Y * Y * (1 - cosTheta) + cosTheta]]
+    
+    return rotationMatrix
+    
+def SolveGeneralMotion():
+    print("\n-------- General Motion --------\n")    
+
+    # Init variables
+    Px, Py, Pz = [Px0], [Py0], [Pz0] 
+    rDash = [Px0, Py0, Pz0]
+    t = stepSize
+    
+    for n in range(0, steps):
+        # Update variables for this timestep
+        Wmag = WmagArray[n+1]      
+        a, B, Y = WxArray[n+1]/Wmag, WyArray[n+1]/Wmag, WzArray[n+1]/Wmag
+        theta = Wmag * t
+        
+        # Calculate the rotation matrix for this timestep
+        rotationMatrix = BuildRotationMatrix(a, B, Y, theta)
+        
+        # Find new rotated position using the rotation matrix
+        rDash = np.matmul(rotationMatrix, rDash)
+
+        # Store components of the position of the point for plotting graphs
+        Px.append(rDash[0])
+        Py.append(rDash[1])
+        Pz.append(x[n+1] + rDash[2]) # Center of mass only moves vertically along Z axis
+    
+        print("Step %s: %s, %s, %s" % (n, Px[n+1], Py[n+1], Pz[n+1]))
+    
+    return Px, Py, Pz
+
+def PlotTask5():
+    # Plot graphs
+    plt.figure()
+    plt.plot(Px, Py)
+    plt.title("Task 5 Trajectory in X-Y Plane")
+    plt.xlabel("x position (m)")
+    plt.ylabel("y position (m)")
+    
+    plt.figure()
+    plt.plot(Px, Pz)
+    plt.title("Task 5 Trajectory in X-Z Plane")
+    plt.xlabel("x position (m)")
+    plt.ylabel("z position (m)")
+
+    plt.figure()
+    plt.plot(Py, Pz)
+    plt.title("Task 5 Trajectory in Y-Z Plane")
+    plt.xlabel("y position (m)")
+    plt.ylabel("z position (m)")
+   
+
 
 # -----========== Main  ==========-----
 
@@ -123,14 +173,19 @@ mass = 5
 radius = 2
 height = 6
 
-stepSize = 0.1
-steps = 200
+stepSize = 0.05
+steps = 400
 
 # Calculate moments of inertia
 I1, I2, I3 = GetMomentsOfInertia(mass, height, radius)
 
 # Do the computation
 WxArray, WyArray, WzArray, WmagArray = RungeKutta()
+
+# Populate array with values for plot's x-axis (time)
+timeArray = []
+for i in range(0, steps + 1):
+    timeArray.append(i * stepSize)
 
 # Produce plots of solutions for task 1
 PlotTask1()
@@ -140,12 +195,22 @@ PlotTask1()
 # Define initial vertical velocity
 v0 = 200
 
-# Compute trajectory
+# Compute trajectory, where x is vertical position and v is vertical velocity
 x, v = SemiImplicitEuler()
 
 # Produce plots of solutions for task 3
 PlotTask3()
 
+# ---- General Motion ----
+
+# Define initial position of point P
+Px0, Py0, Pz0 = 0, 0.75 * radius, 0
+
+# Compute trajectory of point P
+Px, Py, Pz = SolveGeneralMotion()
+
+# Produce plots of solutions for task 5
+PlotTask5()
 
 # Show the graphs
 plt.show() 
