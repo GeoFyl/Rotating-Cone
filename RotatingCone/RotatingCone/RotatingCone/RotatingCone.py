@@ -23,7 +23,7 @@ def RungeKutta():
     Wx, Wy, Wz = [Wx0], [Wy0], [Wz0]
     Wmagnitude = [math.sqrt(Wx0*Wx0 + Wy0*Wy0 + Wz0*Wz0)]
 
-    # Carry out computation
+    # Carry out 4th order Runge-Kutta computation
     for n in range(0, steps):
 
         Kx1 = Y1 * Wy[n] * Wz[n]
@@ -183,9 +183,7 @@ I1, I2, I3 = GetMomentsOfInertia(mass, height, radius)
 WxArray, WyArray, WzArray, WmagArray = RungeKutta()
 
 # Populate array with values for plot's x-axis (time)
-timeArray = []
-for i in range(0, steps + 1):
-    timeArray.append(i * stepSize)
+timeArray = np.arange(0, 20 + stepSize, stepSize)
 
 # Produce plots of solutions for task 1
 PlotTask1()
@@ -216,4 +214,4 @@ PlotTask5()
 plt.show() 
 
 
-#input("\nPress Enter to exit.")
+input("\nPress Enter to exit.")
