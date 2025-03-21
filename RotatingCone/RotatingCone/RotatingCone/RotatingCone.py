@@ -185,7 +185,7 @@ WxArray, WyArray, WzArray, WmagArray = RungeKutta()
 # Populate array with values for plot's x-axis (time)
 timeArray = np.arange(0, 20 + stepSize, stepSize)
 
-# Produce plots of solutions for task 1
+# Produce plots of solutions
 PlotAngularVelocity()
 
 # ---- Semi-implicit Euler ----
@@ -196,7 +196,7 @@ v0 = 200
 # Compute trajectory, where x is vertical position and v is vertical velocity
 x, v = SemiImplicitEuler()
 
-# Produce plots of solutions for task 3
+# Produce plots of solutions
 PlotCoMTrajectory()
 
 # ---- General Motion ----
@@ -207,7 +207,7 @@ Px0, Py0, Pz0 = 0, 0.75 * radius, 0
 # Compute trajectory of point P
 Px, Py, Pz = SolveGeneralMotion()
 
-# Produce plots of solutions for task 5
+# Produce plots of solutions
 PlotGeneralMotion()
 
 # Show the graphs
