@@ -2,7 +2,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-# -----========== Task 1 and 2  ==========-----
+# -----========== Angular velocity  ==========-----
 
 # Calculate moments of inertia for cone from mass, height and base radius 
 def GetMomentsOfInertia(M, h, r):
@@ -55,19 +55,19 @@ def RungeKutta():
         
     return Wx, Wy, Wz, Wmagnitude
 
-def PlotTask1():
+def PlotAngularVelocity():
     # Plot graph
     plt.plot(timeArray, WxArray, label="ωx")
     plt.plot(timeArray, WyArray, label="ωy")
     plt.plot(timeArray, WzArray, label="ωz")
     plt.plot(timeArray, WmagArray, label="|ω|")
     plt.legend(loc="lower right")
-    plt.title("Task 1 Angular Velocity")
+    plt.title("Angular Velocity")
     plt.xlabel("time (s)")
     plt.ylabel("ωi (rad/s)")   
 
 
-# -----========== Task 3 and 4  ==========-----
+# -----========== CoM trajectory  ==========-----
 
 def SemiImplicitEuler():
     print("\n-------- Semi-implicit Euler --------\n")    
@@ -85,22 +85,22 @@ def SemiImplicitEuler():
     
     return x, v
    
-def PlotTask3():
+def PlotCoMTrajectory():
     # Plot graphs
     plt.figure()
     plt.plot(timeArray, v)
-    plt.title("Task 3 Vertical Velocity")
+    plt.title("Centre of Mass Vertical Velocity")
     plt.xlabel("time (s)")
     plt.ylabel("velocity (m/s)")
    
     plt.figure()
     plt.plot(timeArray, x)
-    plt.title("Task 3 Vertical Displacement")
+    plt.title("Centre of Mass Vertical Displacement")
     plt.xlabel("time (s)")
     plt.ylabel("displacement (m)")
 
 
-# -----========== Task 5  ==========-----
+# -----========== General motion  ==========-----
 
 def BuildRotationMatrix(a, B, Y, theta):
     cosTheta = math.cos(theta)
@@ -141,23 +141,23 @@ def SolveGeneralMotion():
     
     return Px, Py, Pz
 
-def PlotTask5():
+def PlotGeneralMotion():
     # Plot graphs
     plt.figure()
     plt.plot(Px, Py)
-    plt.title("Task 5 Trajectory in X-Y Plane")
+    plt.title("Trajectory in X-Y Plane")
     plt.xlabel("x position (m)")
     plt.ylabel("y position (m)")
     
     plt.figure()
     plt.plot(Px, Pz)
-    plt.title("Task 5 Trajectory in X-Z Plane")
+    plt.title("Trajectory in X-Z Plane")
     plt.xlabel("x position (m)")
     plt.ylabel("z position (m)")
 
     plt.figure()
     plt.plot(Py, Pz)
-    plt.title("Task 5 Trajectory in Y-Z Plane")
+    plt.title("Trajectory in Y-Z Plane")
     plt.xlabel("y position (m)")
     plt.ylabel("z position (m)")
    
@@ -186,7 +186,7 @@ WxArray, WyArray, WzArray, WmagArray = RungeKutta()
 timeArray = np.arange(0, 20 + stepSize, stepSize)
 
 # Produce plots of solutions for task 1
-PlotTask1()
+PlotAngularVelocity()
 
 # ---- Semi-implicit Euler ----
 
@@ -197,7 +197,7 @@ v0 = 200
 x, v = SemiImplicitEuler()
 
 # Produce plots of solutions for task 3
-PlotTask3()
+PlotCoMTrajectory()
 
 # ---- General Motion ----
 
@@ -208,7 +208,7 @@ Px0, Py0, Pz0 = 0, 0.75 * radius, 0
 Px, Py, Pz = SolveGeneralMotion()
 
 # Produce plots of solutions for task 5
-PlotTask5()
+PlotGeneralMotion()
 
 # Show the graphs
 plt.show() 
